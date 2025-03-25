@@ -1,0 +1,14 @@
+/* Hide scrollbar for all browsers */
+.no-scrollbar {
+    overflow-x: auto;
+    scrollbar-width: none !important;  /* Firefox */
+    -ms-overflow-style: none !important;  /* IE and Edge */
+  }
+  
+  .no-scrollbar::-webkit-scrollbar {
+    width: 0px !important;
+    height: 0px !important;
+    display: none !important;
+    background: transparent !important;
+  }
+  
