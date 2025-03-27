@@ -226,7 +226,15 @@ requestOtp: {
     deleteCarouselImage: {
         url: '/api/carousel/delete',
         method: 'delete'
-    }
+    },
+    createReview: {
+        url: '/api/reviews/review',
+        method: 'post'
+      },
+      getReviewById: {
+        url: '/api/reviews/review/:id',
+        method: 'get'
+      }
 }
 
 export default SummaryApi

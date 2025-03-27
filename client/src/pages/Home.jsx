@@ -11,6 +11,8 @@ import "swiper/css/pagination";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import ProductDisplayPage from './ProductListPage';
 import image1 from "../assets/net-images-1.jpg"
+import image2 from "../assets/dress.jpg"
+import image3 from "../assets/nestbed.jpg"
 
 const Home = () => {
   const loadingCategory = useSelector(state => state.product.loadingCategory);
@@ -61,7 +63,7 @@ const Home = () => {
       cta: "EXPLORE",
       bgColor: "bg-gradient-to-br from-pink-200 to-pink-400",
       textColor: "text-gray-800",
-      image: "https://via.placeholder.com/500x400"
+      image: image2
     },
     {
       id: 3,
@@ -70,7 +72,7 @@ const Home = () => {
       cta: "DISCOVER",
       bgColor: "bg-gradient-to-br from-green-200 to-green-400",
       textColor: "text-gray-800",
-      image: "https://via.placeholder.com/500x400"
+      image: image3
     }
   ];
 

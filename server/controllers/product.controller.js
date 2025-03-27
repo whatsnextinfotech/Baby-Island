@@ -272,51 +272,116 @@ export const deleteProductDetails = async(request,response)=>{
 }
 
 //search product
-export const searchProduct = async(request,response)=>{
+// export const searchProduct = async(request,response)=>{
+//     try {
+//         let { search, page , limit } = request.body 
+
+//         if(!page){
+//             page = 1
+//         }
+//         if(!limit){
+//             limit  = 10
+//         }
+
+//         const query = search ? {
+//             $text : {
+//                 $search : search
+//             }
+//         } : {}
+
+//         const skip = ( page - 1) * limit
+
+//         const [data,dataCount] = await Promise.all([
+//             ProductModel.find(query).sort({ createdAt  : -1 }).skip(skip).limit(limit).populate('category subCategory'),
+//             ProductModel.countDocuments(query)
+//         ])
+
+//         return response.json({
+//             message : "Product data",
+//             error : false,
+//             success : true,
+//             data : data,
+//             totalCount :dataCount,
+//             totalPage : Math.ceil(dataCount/limit),
+//             page : page,
+//             limit : limit 
+//         })
+
+
+//     } catch (error) {
+//         return response.status(500).json({
+//             message : error.message || error,
+//             error : true,
+//             success : false
+//         })
+//     }
+// }
+export const searchProduct = async (request, response) => {
     try {
-        let { search, page , limit } = request.body 
+        let { search, page, limit } = request.body;
 
-        if(!page){
-            page = 1
-        }
-        if(!limit){
-            limit  = 10
-        }
+        // Set default values for page and limit
+        page = page ? parseInt(page) : 1;
+        limit = limit ? parseInt(limit) : 10;
 
-        const query = search ? {
-            $text : {
-                $search : search
+        // Validate page and limit
+        if (page < 1) page = 1;
+        if (limit < 1) limit = 10;
+
+        // Build the query
+        let query = {};
+        if (search) {
+            // Check if text index exists by attempting a text search
+            query = {
+                $text: { $search: search }
+            };
+            // Fallback to regex search if text index isn't set up
+            try {
+                await ProductModel.find(query).limit(1); // Test query
+            } catch (err) {
+                if (err.name === 'MongoServerError' && err.code === 27) {
+                    // Text index not found, use regex instead
+                    query = {
+                        $or: [
+                            { name: { $regex: search, $options: 'i' } }, // Adjust fields as per your schema
+                            { description: { $regex: search, $options: 'i' } }
+                        ]
+                    };
+                } else {
+                    throw err; // Rethrow other errors
+                }
             }
-        } : {}
+        }
 
-        const skip = ( page - 1) * limit
+        const skip = (page - 1) * limit;
 
-        const [data,dataCount] = await Promise.all([
-            ProductModel.find(query).sort({ createdAt  : -1 }).skip(skip).limit(limit).populate('category subCategory'),
+        const [data, dataCount] = await Promise.all([
+            ProductModel.find(query)
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit)
+                .populate('category subCategory'),
             ProductModel.countDocuments(query)
-        ])
+        ]);
 
         return response.json({
-            message : "Product data",
-            error : false,
-            success : true,
-            data : data,
-            totalCount :dataCount,
-            totalPage : Math.ceil(dataCount/limit),
-            page : page,
-            limit : limit 
-        })
-
-
+            message: "Product data",
+            error: false,
+            success: true,
+            data: data,
+            totalCount: dataCount,
+            totalPage: Math.ceil(dataCount / limit),
+            page: page,
+            limit: limit
+        });
     } catch (error) {
         return response.status(500).json({
-            message : error.message || error,
-            error : true,
-            success : false
-        })
+            message: error.message || "An error occurred while searching products",
+            error: true,
+            success: false
+        });
     }
-}
-
+};
 
 
 

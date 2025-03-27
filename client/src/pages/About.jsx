@@ -4,6 +4,8 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import Chooseus from "../assets/about.png"
+import about from "../assets/chooseus.png"
 
 const About = () => {
   const navigate = useNavigate();
@@ -106,7 +108,7 @@ const About = () => {
           
           <div className="flex flex-col md:flex-row items-center gap-8 bg-gray-50 p-6 rounded-xl">
             <img
-              src="/api/placeholder/400/400"
+              src={Chooseus}
               alt="Happy Baby"
               className="w-full md:w-1/3 h-64 rounded-xl object-cover shadow-md"
             />
@@ -167,7 +169,7 @@ const About = () => {
         </div>
           <div className="flex flex-col md:flex-row-reverse items-center gap-8">
             <img
-              src="/api/placeholder/400/400"
+              src={about}
               alt="Our Team"
               className="w-full md:w-1/3 h-64 rounded-xl object-cover shadow-md"
             />

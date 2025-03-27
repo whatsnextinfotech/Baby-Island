@@ -4,7 +4,7 @@ import productReducer from './productSlice'
 import cartReducer from './cartProduct'
 import addressReducer from './addressSlice'
 import orderReducer from './orderSlice'
-import reviewReducer from './customerReviewSlice'
+import customerReviewReducer from './customerReviewSlice';
 import wishlistReducer from "./wishlist";
 
 export const store = configureStore({
@@ -14,7 +14,7 @@ export const store = configureStore({
     cartItem : cartReducer,
     addresses : addressReducer,
     orders : orderReducer,
-    review : reviewReducer,
+    reviews: customerReviewReducer,
     wishlist: wishlistReducer // Add the wishlist reducer
   },
 })
