@@ -1,85 +1,118 @@
-import React, { useState } from 'react'
-import EditProductAdmin from './EditProductAdmin'
-import CofirmBox from './CofirmBox'
-import { IoClose } from 'react-icons/io5'
-import SummaryApi from '../common/SummaryApi'
-import Axios from '../utils/Axios'
-import AxiosToastError from '../utils/AxiosToastError'
-import toast from 'react-hot-toast'
+import React, { useState } from 'react';
+import EditProductAdmin from './EditProductAdmin';
+import { IoClose } from 'react-icons/io5';
+import SummaryApi from '../common/SummaryApi';
+import Axios from '../utils/Axios';
+import AxiosToastError from '../utils/AxiosToastError';
+import toast from 'react-hot-toast';
 
 const ProductCardAdmin = ({ data, fetchProductData }) => {
-  const [editOpen,setEditOpen]= useState(false)
-  const [openDelete,setOpenDelete] = useState(false)
+  const [editOpen, setEditOpen] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
 
-  const handleDeleteCancel  = ()=>{
-      setOpenDelete(false)
-  }
+  const handleDeleteCancel = () => {
+    setOpenDelete(false);
+  };
 
-  const handleDelete = async()=>{
+  const handleDelete = async () => {
     try {
       const response = await Axios({
         ...SummaryApi.deleteProduct,
-        data : {
-          _id : data._id
+        data: { _id: data._id }
+      });
+
+      const { data: responseData } = response;
+      if (responseData.success) {
+        toast.success(responseData.message);
+        if (fetchProductData) {
+          fetchProductData();
         }
-      })
-
-      const { data : responseData } = response
-
-      if(responseData.success){
-          toast.success(responseData.message)
-          if(fetchProductData){
-            fetchProductData()
-          }
-          setOpenDelete(false)
+        setOpenDelete(false);
       }
     } catch (error) {
-      AxiosToastError(error)
+      AxiosToastError(error);
     }
-  }
+  };
+
   return (
-    <div className='w-36 p-4 bg-white rounded'>
-        <div>
-            <img
-               src={data?.image[0]}  
-               alt={data?.name}
-               className='w-full h-full object-scale-down'
-            />
-        </div>
-        <p className='text-ellipsis line-clamp-2 font-medium'>{data?.name}</p>
-        <p className='text-slate-400'>{data?.unit}</p>
-        <div className='grid grid-cols-2 gap-3 py-2'>
-          <button onClick={()=>setEditOpen(true)} className='border px-1 py-1 text-sm border-green-600 bg-green-100 text-green-800 hover:bg-green-200 rounded'>Edit</button>
-          <button onClick={()=>setOpenDelete(true)} className='border px-1 py-1 text-sm border-red-600 bg-red-100 text-red-600 hover:bg-red-200 rounded'>Delete</button>
-        </div>
+    <div className='w-full max-w-[180px] bg-white rounded-lg shadow-md p-4 transition-all duration-300 hover:shadow-lg'>
+      {/* Product Image */}
+      <div className='relative w-full h-32 mb-2'>
+        <img
+          src={data?.image[0] || '/placeholder-image.jpg'} // Fallback image if none exists
+          alt={data?.name}
+          className='w-full h-full object-contain rounded-md'
+        />
+      </div>
 
-        {
-          editOpen && (
-            <EditProductAdmin fetchProductData={fetchProductData} data={data} close={()=>setEditOpen(false)}/>
-          )
-        }
+      {/* Product Info */}
+      <div className='space-y-1'>
+        <p className='text-sm font-semibold text-gray-800 line-clamp-2' title={data?.name}>
+          {data?.name}
+        </p>
+        <p className='text-xs text-gray-500'>{data?.unit || 'N/A'}</p>
+      </div>
 
-        {
-          openDelete && (
-            <section className='fixed top-0 left-0 right-0 bottom-0 bg-neutral-600 z-50 bg-opacity-70 p-4 flex justify-center items-center '>
-                <div className='bg-white p-4 w-full max-w-md rounded-md'>
-                    <div className='flex items-center justify-between gap-4'>
-                        <h3 className='font-semibold'>Permanent Delete</h3>
-                        <button onClick={()=>setOpenDelete(false)}>
-                          <IoClose size={25}/>
-                        </button>
-                    </div>
-                    <p className='my-2'>Are you sure want to delete permanent ?</p>
-                    <div className='flex justify-end gap-5 py-4'>
-                      <button onClick={handleDeleteCancel} className='border px-3 py-1 rounded bg-red-100 border-red-500 text-red-500 hover:bg-red-200'>Cancel</button>
-                      <button onClick={handleDelete} className='border px-3 py-1 rounded bg-green-100 border-green-500 text-green-500 hover:bg-green-200'>Delete</button>
-                    </div>
-                </div>
-            </section>
-          )
-        }
+      {/* Action Buttons */}
+      <div className='grid grid-cols-2 gap-2 mt-3'>
+        <button
+          onClick={() => setEditOpen(true)}
+          className='w-full py-1.5 px-2 text-sm font-medium text-green-700 bg-green-50 border border-green-200 rounded-md hover:bg-green-100 transition-colors duration-200'
+        >
+          Edit
+        </button>
+        <button
+          onClick={() => setOpenDelete(true)}
+          className='w-full py-1.5 px-2 text-sm font-medium text-red-700 bg-red-50 border border-red-200 rounded-md hover:bg-red-100 transition-colors duration-200'
+        >
+          Delete
+        </button>
+      </div>
+
+      {/* Edit Product Modal */}
+      {editOpen && (
+        <EditProductAdmin
+          fetchProductData={fetchProductData}
+          data={data}
+          close={() => setEditOpen(false)}
+        />
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {openDelete && (
+        <section className='fixed inset-0 bg-gray-900 bg-opacity-75 z-50 flex items-center justify-center p-4'>
+          <div className='bg-white rounded-lg shadow-xl p-6 w-full max-w-md'>
+            <div className='flex items-center justify-between mb-4'>
+              <h3 className='text-lg font-semibold text-gray-800'>Confirm Deletion</h3>
+              <button
+                onClick={() => setOpenDelete(false)}
+                className='text-gray-500 hover:text-gray-700 transition-colors duration-200'
+              >
+                <IoClose size={24} />
+              </button>
+            </div>
+            <p className='text-sm text-gray-600 mb-6'>
+              Are you sure you want to permanently delete "{data?.name}"? This action cannot be undone.
+            </p>
+            <div className='flex justify-end gap-4'>
+              <button
+                onClick={handleDeleteCancel}
+                className='px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors duration-200'
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                className='px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors duration-200'
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default ProductCardAdmin
+export default ProductCardAdmin;

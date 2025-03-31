@@ -282,7 +282,7 @@ const ProductDisplayPage = () => {
 
           {/* Navigation Tabs */}
           <div className="container mx-auto px-0 py-8">
-            <div className="border-b flex gap-6 pb-2">
+            <div className="border-b  text-sm md:text-xl   flex gap-5 md:gap-6 pb-2">
               {["Description", "Customer Reviews", "Return Policy"].map((tab) => (
                 <button
                   key={tab}
@@ -401,7 +401,7 @@ const ProductDisplayPage = () => {
       <div className='mt-20 w-full'>
         <div className="flex items-center justify-center">
           <div className="h-px bg-black w-12"></div>
-          <h2 className="text-2xl font-bold mx-4 text-gray-800">Recommended Products</h2>
+          <h2 className="text-xl md:text-2xl font-bold mx-4 text-gray-800">Recommended Products</h2>
           <div className="h-px bg-black w-12"></div>
         </div>
         {categoryData?.length > 0 && (

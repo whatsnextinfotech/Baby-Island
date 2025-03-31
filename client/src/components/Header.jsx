@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import logo from '../assets/babyislandlogo.jpg'
+import logo from '../assets/babyisland.jpg'
 import Search from './Search'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { FaRegCircleUser } from "react-icons/fa6";
@@ -111,15 +111,13 @@ const Header = () => {
                         {/**logo */}
                         {/** Logo */}
                         <div className='h-[80px] sm:h-[100px] md:h-[120px] lg:h-[120px] flex items-center'>
-    <Link to={"/"} className='h-full flex justify-center items-center'>
+  <Link to={"/"} className='h-full flex justify-center items-center'>
     <img
-    src={logo}
-    className="h-full w-auto object-contain"
-    alt="logo"
-  />
-
-
-    </Link>
+      src={logo}
+      className="h-[95%] sm:h-[85%] md:h-[80%] lg:h-[95%] w-auto object-contain"
+      alt="logo"
+    />
+  </Link>
 </div>
 
 

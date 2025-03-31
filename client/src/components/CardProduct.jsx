@@ -124,12 +124,12 @@ const CardProduct = ({ data }) => {
 
             {/* Pricing & Discount */}
             <div className="
-                px-1.5 
+                px-1 
                 lg:px-0 
                 flex 
                 items-center 
                 justify-between 
-                gap-2 
+                gap-0 
                 sm:gap-2 
                 lg:gap-4 
                 text-xs 
@@ -142,9 +142,10 @@ const CardProduct = ({ data }) => {
                     <div className="
                         font-bold 
                         text-gray-900 
-                        text-sm 
+                        text-xs 
                         sm:text-sm 
                         lg:text-lg
+                        
                     ">
                         {DisplayPriceInRupees(pricewithDiscount(data.price, data.discount))}
                     </div>
@@ -154,7 +155,7 @@ const CardProduct = ({ data }) => {
                         <p className="
                             line-through 
                             text-gray-500 
-                            text-[9px] 
+                            text-[8px] 
                             sm:text-[10px] 
                             lg:text-xs
                         ">

@@ -111,7 +111,7 @@ const DisplayCartItem = ({close}) => {
             {
                 cartItem[0] && (
                     <div className='p-2'>
-                        <div className='bg-black text-neutral-100 px-4 font-bold text-base py-4 static bottom-3 rounded flex items-center gap-4 justify-between'>
+                        {/* <div className='bg-black text-neutral-100 px-4 font-bold text-base py-4 static bottom-3 rounded flex items-center gap-4 justify-between'>
                             <div>
                                 {DisplayPriceInRupees(totalPrice)}
                             </div>
@@ -119,7 +119,7 @@ const DisplayCartItem = ({close}) => {
                                 Proceed
                                 <span><FaCaretRight/></span>
                             </button>
-                        </div>
+                        </div> */}
                     </div>
                 )
             }

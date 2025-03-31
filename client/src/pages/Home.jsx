@@ -164,8 +164,8 @@ const Home = () => {
           </div>
         </SwiperSlide>
       ))}
-      <div className="swiper-button-next"></div>
-      <div className="swiper-button-prev"></div>
+      <div className="swiper-button-next hidden md:flex"></div>
+      <div className="swiper-button-prev hidden md:flex"></div>
     </Swiper>
   </div>
 </div>
@@ -295,11 +295,11 @@ const Home = () => {
                       <img 
                         src={subcategory.image}
                         alt={subcategory.name}
-                        className='w-36 h-36 object-cover rounded-full'
+                        className='w-32 h-32 md:w-36 md:h-36 object-cover rounded-full'
                       />
                     </div>
                     <div className='text-center'>
-                      <h3 className='font-medium text-gray-800 capitalize'>{subcategory.name}</h3>
+                      <h3 className='font-medium text-sm md:text-base text-gray-800 capitalize'>{subcategory.name}</h3>
                       {/* <p className='text-sm text-gray-500 mt-1'>
                         {subcategory.category && subcategory.category[0] ? subcategory.category[0].name : 'Category'}
                       </p> */}

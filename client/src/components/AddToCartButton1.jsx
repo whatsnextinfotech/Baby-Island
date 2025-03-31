@@ -90,7 +90,7 @@ const AddToCartButton = ({ data }) => {
                       lg:px-4 lg:py-2 
                       rounded-md 
                       flex items-center justify-center text-center 
-                      w-40 sm:w-48 md:w-56 
+                      w-36 sm:w-48 md:w-56 
                       text-sm sm:text-base"
         >
           {loading ? <Loading /> : "Add to Cart"}
