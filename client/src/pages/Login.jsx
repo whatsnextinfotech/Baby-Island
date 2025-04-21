@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FaRegEyeSlash, FaRegEye } from "react-icons/fa6";
+import { IoCloseOutline } from "react-icons/io5"; // Added import for close icon
 import toast from 'react-hot-toast';
 import Axios from '../utils/Axios';
 import SummaryApi from '../common/SummaryApi';
@@ -58,12 +59,25 @@ const Login = () => {
         }
     };
 
+    // Handler for close button
+    const handleClose = () => {
+        navigate('/');
+    };
+
     return (
         <section className='w-full container mx-auto px-2'>
-            <div className='bg-white my-8 w-full max-w-md mx-auto rounded-lg shadow-lg p-8 border border-gray-200'>
+            <div className='bg-white my-8 w-full max-w-md mx-auto rounded-lg shadow-lg p-8 border border-gray-200 relative'>
+                {/* Close button */}
+                <button 
+                    onClick={handleClose}
+                    className='absolute top-4 right-4 text-gray-500 hover:text-black transition-colors'
+                    aria-label="Close and return to home page"
+                >
+                    <IoCloseOutline size={24} />
+                </button>
+                
                 <h2 className='text-2xl font-bold text-center text-black mb-2'>Welcome to BabyIsland</h2>
                 
-
                 <form className='grid gap-5 mt-4' onSubmit={handleSubmit}>
                     <div className='grid gap-2'>
                         <label htmlFor='email' className='text-sm font-medium text-gray-700'>Email Address</label>

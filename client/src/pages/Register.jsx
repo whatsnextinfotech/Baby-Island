@@ -13,64 +13,72 @@ const Register = () => {
         mobile: "",
         password: "",
         confirmPassword: ""
-    })
-    const [showPassword, setShowPassword] = useState(false)
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-    const navigate = useNavigate()
+    });
+
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
-        const { name, value } = e.target
+        const { name, value } = e.target;
+        setData((prev) => ({
+            ...prev,
+            [name]: value
+        }));
+    };
 
-        setData((preve) => {
-            return {
-                ...preve,
-                [name]: value
-            }
-        })
-    }
+    const valideValue = Object.values(data).every(el => el);
 
-    const valideValue = Object.values(data).every(el => el)
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-    const handleSubmit = async(e) => {
-        e.preventDefault()
-
-        if(data.password !== data.confirmPassword){
-            toast.error(
-                "Password and confirm password must be same"
-            )
-            return
+        if (data.password !== data.confirmPassword) {
+            toast.error("Password and confirm password must be same");
+            return;
         }
 
         try {
             const response = await Axios({
                 ...SummaryApi.register,
-                data : data
-            })
-            
-            if(response.data.error){
-                toast.error(response.data.message)
+                data: data
+            });
+
+            if (response.data.error) {
+                toast.error(response.data.message);
             }
 
-            if(response.data.success){
-                toast.success(response.data.message)
+            if (response.data.success) {
+                toast.success(response.data.message);
                 setData({
-                    name : "",
-                    email : "",
+                    name: "",
+                    email: "",
                     mobile: "",
-                    password : "",
-                    confirmPassword : ""
-                })
-                navigate("/login")
+                    password: "",
+                    confirmPassword: ""
+                });
+                navigate("/login");
             }
 
         } catch (error) {
-            AxiosToastError(error)
+            AxiosToastError(error);
         }
-    }
-    
+    };
+
     return (
         <section className='w-full container mx-auto px-2'>
-            <div className='bg-white my-8 w-full max-w-lg mx-auto rounded-md p-8 shadow-md border border-gray-200'>
+            <div className='bg-white my-8 w-full max-w-lg mx-auto rounded-md p-8 shadow-md border border-gray-200 relative'>
+                
+                {/* Close Button */}
+                <div className="flex justify-end">
+                    <button
+                        onClick={() => navigate('/')}
+                        className="text-gray-500 hover:text-black text-xl font-bold"
+                        aria-label="Close"
+                    >
+                        ×
+                    </button>
+                </div>
+
                 <h2 className='text-2xl font-bold text-black mb-2'>Create Account</h2>
                 <p className='text-gray-600 mb-6'>Welcome to BabyIsland</p>
 
@@ -124,14 +132,8 @@ const Register = () => {
                                 onChange={handleChange}
                                 placeholder='Enter your password'
                             />
-                            <div onClick={() => setShowPassword(preve => !preve)} className='cursor-pointer text-gray-500 hover:text-black ml-2'>
-                                {
-                                    showPassword ? (
-                                        <FaRegEye />
-                                    ) : (
-                                        <FaRegEyeSlash />
-                                    )
-                                }
+                            <div onClick={() => setShowPassword(prev => !prev)} className='cursor-pointer text-gray-500 hover:text-black ml-2'>
+                                {showPassword ? <FaRegEye /> : <FaRegEyeSlash />}
                             </div>
                         </div>
                     </div>
@@ -147,22 +149,16 @@ const Register = () => {
                                 onChange={handleChange}
                                 placeholder='Confirm your password'
                             />
-                            <div onClick={() => setShowConfirmPassword(preve => !preve)} className='cursor-pointer text-gray-500 hover:text-black ml-2'>
-                                {
-                                    showConfirmPassword ? (
-                                        <FaRegEye />
-                                    ) : (
-                                        <FaRegEyeSlash />
-                                    )
-                                }
+                            <div onClick={() => setShowConfirmPassword(prev => !prev)} className='cursor-pointer text-gray-500 hover:text-black ml-2'>
+                                {showConfirmPassword ? <FaRegEye /> : <FaRegEyeSlash />}
                             </div>
                         </div>
                     </div>
 
-                    <button 
-                        disabled={!valideValue} 
+                    <button
+                        disabled={!valideValue}
                         className={`${valideValue ? "bg-black hover:bg-gray-800" : "bg-gray-400"} 
-                        text-white py-3 rounded-md font-medium mt-3 tracking-wide transition-colors`}
+                            text-white py-3 rounded-md font-medium mt-3 tracking-wide transition-colors`}
                     >
                         Create Account
                     </button>
@@ -173,7 +169,7 @@ const Register = () => {
                 </p>
             </div>
         </section>
-    )
-}
+    );
+};
 
-export default Register
+export default Register;

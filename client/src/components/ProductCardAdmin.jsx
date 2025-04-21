@@ -50,7 +50,7 @@ const ProductCardAdmin = ({ data, fetchProductData }) => {
         <p className='text-sm font-semibold text-gray-800 line-clamp-2' title={data?.name}>
           {data?.name}
         </p>
-        <p className='text-xs text-gray-500'>{data?.unit || 'N/A'}</p>
+        {/* <p className='text-xs text-gray-500'>{data?.unit || 'N/A'}</p> */}
       </div>
 
       {/* Action Buttons */}

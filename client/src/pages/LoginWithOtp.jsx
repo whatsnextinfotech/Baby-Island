@@ -10,19 +10,17 @@ import { setUserDetails } from '../store/userSlice';
 const LoginWithOtp = () => {
     const [mobile, setMobile] = useState('');
     const [otp, setOtp] = useState(['', '', '', '', '', '']);
-    const [step, setStep] = useState(1); // 1: Enter mobile, 2: Enter OTP
+    const [step, setStep] = useState(1);
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const inputRefs = useRef([]);
 
-    // Initialize refs for OTP inputs
     useEffect(() => {
         inputRefs.current = inputRefs.current.slice(0, 6);
     }, []);
 
     const handleRequestOtp = async (e) => {
         e.preventDefault();
-        
         if (!mobile || mobile.length < 10) {
             toast.error('Please enter a valid mobile number');
             return;
@@ -33,19 +31,13 @@ const LoginWithOtp = () => {
                 ...SummaryApi.requestSmsOtp,
                 data: { mobile }
             });
-            
-            if (response.data.error) {
-                toast.error(response.data.message);
-            }
 
+            if (response.data.error) toast.error(response.data.message);
             if (response.data.success) {
                 toast.success(response.data.message || 'OTP sent successfully');
                 setStep(2);
-                // Focus first OTP input after transitioning to step 2
                 setTimeout(() => {
-                    if (inputRefs.current[0]) {
-                        inputRefs.current[0].focus();
-                    }
+                    if (inputRefs.current[0]) inputRefs.current[0].focus();
                 }, 100);
             }
         } catch (error) {
@@ -56,44 +48,29 @@ const LoginWithOtp = () => {
     const handleOtpChange = (e, index) => {
         const value = e.target.value;
         if (isNaN(value)) return;
-
-        // Update the OTP array with the new value at the given index
         const newOtp = [...otp];
-        newOtp[index] = value.slice(0, 1); // Only take the first character
+        newOtp[index] = value.slice(0, 1);
         setOtp(newOtp);
-
-        // If a digit was entered and there's a next input, focus it
         if (value && index < 5) {
             inputRefs.current[index + 1].focus();
         }
     };
 
     const handleKeyDown = (e, index) => {
-        // Handle backspace
-        if (e.key === 'Backspace') {
-            if (!otp[index] && index > 0) {
-                // If current field is empty and backspace is pressed, focus previous field
-                inputRefs.current[index - 1].focus();
-            }
+        if (e.key === 'Backspace' && !otp[index] && index > 0) {
+            inputRefs.current[index - 1].focus();
         }
     };
 
     const handlePaste = (e) => {
         e.preventDefault();
         const pastedData = e.clipboardData.getData('text').trim();
-        
-        // If pasted content is numeric and has a reasonable length
         if (/^\d+$/.test(pastedData) && pastedData.length <= 6) {
             const newOtp = [...otp];
-            
-            // Fill in the OTP fields with the pasted digits
             for (let i = 0; i < Math.min(pastedData.length, 6); i++) {
                 newOtp[i] = pastedData[i];
             }
-            
             setOtp(newOtp);
-            
-            // Focus the appropriate field based on paste length
             const focusIndex = Math.min(pastedData.length, 5);
             if (inputRefs.current[focusIndex]) {
                 inputRefs.current[focusIndex].focus();
@@ -103,7 +80,6 @@ const LoginWithOtp = () => {
 
     const handleVerifyOtp = async (e) => {
         e.preventDefault();
-        
         const otpString = otp.join('');
         if (otpString.length !== 6) {
             toast.error('Please enter a valid 6-digit OTP');
@@ -115,22 +91,14 @@ const LoginWithOtp = () => {
                 ...SummaryApi.verifySmsOtp,
                 data: { mobile, otp: otpString }
             });
-            
-            if (response.data.error) {
-                toast.error(response.data.message);
-            }
+
+            if (response.data.error) toast.error(response.data.message);
 
             if (response.data.success) {
                 toast.success(response.data.message || 'Login successful');
-                
-                // Store tokens
                 localStorage.setItem('accessToken', response.data.data.accessToken);
                 localStorage.setItem('refreshToken', response.data.data.refreshToken);
-                
-                // Update user state
                 dispatch(setUserDetails(response.data.data.user));
-                
-                // Redirect to dashboard
                 navigate('/');
             }
         } catch (error) {
@@ -144,19 +112,13 @@ const LoginWithOtp = () => {
                 ...SummaryApi.requestSmsOtp,
                 data: { mobile }
             });
-            
-            if (response.data.error) {
-                toast.error(response.data.message);
-            }
+
+            if (response.data.error) toast.error(response.data.message);
 
             if (response.data.success) {
                 toast.success(response.data.message || 'OTP resent successfully');
-                // Reset OTP fields
                 setOtp(['', '', '', '', '', '']);
-                // Focus first input
-                if (inputRefs.current[0]) {
-                    inputRefs.current[0].focus();
-                }
+                if (inputRefs.current[0]) inputRefs.current[0].focus();
             }
         } catch (error) {
             AxiosToastError(error);
@@ -165,7 +127,17 @@ const LoginWithOtp = () => {
 
     return (
         <section className='w-full container mx-auto px-2'>
-            <div className='bg-white my-8 w-full max-w-md mx-auto rounded-lg shadow-lg p-8 border border-gray-200'>
+            <div className='relative bg-white my-8 w-full max-w-md mx-auto rounded-lg shadow-lg p-8 border border-gray-200'>
+
+                {/* Close Button */}
+                <button 
+                    onClick={() => navigate('/')}
+                    className='absolute top-2 right-2 text-gray-500 hover:text-black text-xl font-bold'
+                    aria-label="Close"
+                >
+                    &times;
+                </button>
+
                 <h2 className='text-2xl font-bold text-center text-black mb-2'>Welcome to BabyIsland</h2>
                 <p className='text-gray-600 text-sm text-center mb-6'>
                     {step === 1 ? 'Login with your mobile number' : 'Verify your mobile number'}

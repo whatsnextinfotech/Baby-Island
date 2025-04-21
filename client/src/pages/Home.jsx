@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import { useSelector } from 'react-redux';
 import { valideURLConvert } from '../utils/valideURLConvert';
 import { useNavigate } from 'react-router-dom';
@@ -11,7 +11,7 @@ import "swiper/css/pagination";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import ProductDisplayPage from './ProductListPage';
 import image1 from "../assets/net-images-1.jpg"
-import image2 from "../assets/dress.jpg"
+import image2 from "../assets/babydress.jpg"
 import image3 from "../assets/nestbed.jpg"
 
 const Home = () => {
@@ -20,6 +20,9 @@ const Home = () => {
   const subCategoryData = useSelector(state => state.product.allSubCategory);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    window.scrollTo(0, 0); 
+  }, []);
   const handleRedirectProductListpage = (categoryId, categoryName) => {
     // Find the first subcategory that belongs to this category
     const subcategory = subCategoryData.find(sub => {
@@ -45,41 +48,54 @@ const Home = () => {
     }
   };
 
-  // Custom banner designs for baby products
   const banners = [
     {
       id: 1,
       title: "Adorable Baby Essentials",
       subtitle: "Comfort & quality for your little one",
       cta: "SHOP NOW",
+      productUrl: "/product/Baby-Sleeping-Bed-With-Net---Blue---White-67d39fe4027ac0f806d8bbd0", // Added product URL
       bgColor: "bg-gradient-to-br from-blue-300 to-purple-300",
       textColor: "text-gray-800",
-      image: image1
+      image: image1,
+      // badge: "BESTSELLER", // Added badge
+      imageWidth: "100%", // Custom image sizing
+      imageHeight: "100%"
     },
     {
       id: 2,
       title: "New Arrivals",
       subtitle: "Spring collection for your baby",
       cta: "EXPLORE",
+      productUrl: "/product/Baby-Carry-Nest---Green---White-67d3a74a027ac0f806d8bcd8", // Added product URL
       bgColor: "bg-gradient-to-br from-pink-200 to-pink-400",
       textColor: "text-gray-800",
-      image: image2
+      image: image3,
+      // badge: "NEW", // Added badge
+      imageWidth: "100%", // Custom image sizing
+      imageHeight: "100%",
+      waveColor: "rgba(255,255,255,0.3)" // Custom wave color
     },
     {
       id: 3,
       title: "Organic Baby Care",
       subtitle: "Gentle products for sensitive skin",
       cta: "DISCOVER",
+      productUrl: "/product/BABY-DRESS-MIX-COLOURS-set-of-5-67d3a9be027ac0f806d8bcdd", // Added product URL
       bgColor: "bg-gradient-to-br from-green-200 to-green-400",
       textColor: "text-gray-800",
-      image: image3
+      image: image2,
+      // badge: "NATURAL", // Added badge
+      imageWidth: "100%", // Custom image sizing
+      imageHeight: "100%",
+      decorativeColor: "bg-yellow-400/20" // Custom decorative element color
     }
   ];
 
   return (
     <section className='bg-white'>
       {/* Dynamic Scrollable Category List */}
-      <div className="w-full h-[50px] flex items-center justify-center mb-3 overflow-x-auto no-scrollbar">
+      {/* <div className="w-full h-[50px] flex items-center justify-center mb-3 overflow-x-auto no-scrollbar">
         <ul className="flex space-x-8 md:space-x-24 whitespace-nowrap px-4">
           {subCategoryData.map((subcat) => (
             <li key={subcat._id}>
@@ -93,11 +109,12 @@ const Home = () => {
             </li>
           ))}
         </ul>
-      </div>
+      </div> */}
 
       {/* Banner Carousel Section */}
    {/* Banner Carousel Section */}
-   <div className="w-full h-full min-h-48 flex items-center justify-center mb-10">
+  {/* Banner Carousel Section */}
+  <div className="w-full h-full min-h-48 flex items-center justify-center mb-10">
   <div className="w-full mx-auto">
     <Swiper
       modules={[Navigation, Pagination, Autoplay]}
@@ -117,34 +134,57 @@ const Home = () => {
           <div className={`w-full h-[350px] sm:h-[400px] md:h-[450px] lg:h-[500px] ${banner.bgColor} rounded-xl overflow-hidden relative`}>
             
             {/* Content Container - Flex column on mobile, row on desktop */}
-            <div className="absolute inset-0 flex flex-col lg:flex-row items-center justify-center p-4 sm:p-6 lg:p-16 lg:justify-between">
+            <div className="absolute inset-0 flex flex-col lg:flex-row items-center justify-center p-4 sm:p-6 lg:ps-40 lg:pr-28 lg:justify-between">
               
-              {/* Image Container - First on mobile */}
-              <div className="w-4/5 lg:w-2/5 h-2/4 lg:h-5/6 mb-2 lg:mb-0 lg:order-2">
-                <div className="bg-white bg-opacity-95 p-2 lg:p-6 rounded-lg shadow-md h-full flex items-center justify-center">
-                  <img
-                    src={banner.image}
-                    alt={banner.title}
-                    className="max-h-full object-contain rounded"
-                  />
+              {/* Enhanced Image Container Only */}
+              <div className="w-4/5 lg:w-2/5 h-2/4 lg:h-[58vh] mb-2 lg:mb-0 lg:order-2 relative group">
+                {/* Floating Image Frame with Glass Effect */}
+                <div className="relative w-full h-full">
+                  {/* Glass Panel */}
+                  <div className="absolute inset-0 bg-white/10 backdrop-blur-lg rounded-xl border-2 border-white/30 shadow-[0_20px_50px_rgba(0,0,0,0.15)] overflow-hidden">
+                    {/* Image with Parallax Effect */}
+                    <div className="w-full h-full transform transition-transform duration-700 group-hover:scale-105 ">
+                      <img
+                        src={banner.image}
+                        alt={banner.title}
+                        className=" h-full w-full lg:object-contain object-center p-1 "
+                        style={{
+                          width: banner.imageWidth || '100%', 
+                          height: banner.imageHeight || '100%',
+                          
+                        }}
+                      />
+                    </div>
+                  </div>
+                  
+                  {/* Floating Decorative Elements */}
+                  <div className="absolute -top-3 -left-3 w-12 h-12 rounded-full bg-pink-400/20 blur-md z-0"></div>
+                  <div className="absolute -bottom-3 -right-3 w-14 h-14 bg-blue-400/20 blur-md z-0 rounded-[40%_60%_60%_40%/40%_40%_60%_60%]"></div>
+                  
+                  {/* Optional Badge */}
+                  {banner.badge && (
+                    <div className="absolute -top-3 -right-3 bg-white text-pink-600 px-2 py-1 rounded-full shadow-md font-bold text-xs z-20 rotate-6">
+                      {banner.badge}
+                    </div>
+                  )}
                 </div>
               </div>
               
-              {/* Text and Button Container - Second on mobile */}
-              <div className="w-full lg:w-1/2 z-10 flex flex-col items-center lg:items-start text-center lg:text-left lg:order-1">
+              {/* Original Text and Button Container - Unchanged */}
+              <div className="w-full lg:w-1/2  z-10 flex flex-col items-center lg:items-start text-center lg:text-left lg:order-1">
                 <h2 className={`text-xl sm:text-2xl lg:text-6xl font-bold mb-1 sm:mb-3 ${banner.textColor}`}>
                   {banner.title}
                 </h2>
                 <p className={`text-xs sm:text-sm lg:text-2xl mb-2 sm:mb-4 ${banner.textColor} opacity-90`}>
                   {banner.subtitle}
                 </p>
-                <button className="bg-white text-pink-600 hover:bg-pink-50 px-4 py-1 sm:py-2 lg:px-8 lg:py-3 rounded-full font-bold shadow-md transition duration-300 transform hover:scale-105 text-xs sm:text-sm lg:text-base">
+                <button onClick={() => window.location.href = banner.productUrl} className="bg-white text-pink-600 hover:bg-pink-50 px-4 py-1 sm:py-2 lg:px-8 lg:py-3 rounded-full font-bold shadow-md transition duration-300 text-xs sm:text-sm lg:text-base">
                   {banner.cta}
                 </button>
               </div>
             </div>
             
-            {/* Wave Pattern - Simplified for mobile */}
+            {/* Original Wave Pattern - Unchanged */}
             <div className="absolute bottom-0 left-0 right-0">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="w-full">
                 <path
@@ -155,7 +195,7 @@ const Home = () => {
               </svg>
             </div>
             
-            {/* Decorative Elements Removed for Mobile */}
+            {/* Original Decorative Elements - Unchanged */}
             <div className="hidden md:block absolute top-10 right-10 w-16 h-16 opacity-20">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M18.5 2a4.5 4.5 0 0 1-.883 8.82l.883 1.682 3.5-7-3.5-3.5zm-13 0l-3.5 3.5 3.5 7 .883-1.682A4.5 4.5 0 0 1 5.5 2zM12 13.95l-1-2-1 2-2 .5 1.5 1.5-.5 2L12 16.5l2.5 1.5-.5-2 1.5-1.5-2-.5z" />
@@ -170,7 +210,7 @@ const Home = () => {
   </div>
 </div>
 
-{/* Add this CSS to your stylesheet or as a style tag */}
+{/* CSS for styling */}
 <style jsx>{`
   .swiper-white-arrows .swiper-button-next,
   .swiper-white-arrows .swiper-button-prev {
@@ -210,7 +250,7 @@ const Home = () => {
                 .filter(c => c.name === "New Arrivals")
                 .map((c) => (
                   <CategoryWiseProductDisplay 
-                    key={c?._id + "NewArrivals"} 
+                    key={c?._id + "New Arrivals"} 
                     id={c?._id} 
                     name={c?.name} 
                     sortByLatest={true}
@@ -225,13 +265,15 @@ const Home = () => {
       <div className="container mx-auto mt-16">
       <div className="flex items-center justify-center mb-8">
           <div className="h-px bg-black w-12"></div>
-          <h2 className="text-2xl font-bold mx-4 text-gray-800"> Shop by Categories</h2>
+          <h2 className=" text-xl lg:text-2xl font-bold mx-4 text-gray-800"> Shop by Categories</h2>
           <div className="h-px bg-black w-12"></div>
         </div>
       </div>
 
-      <div className="w-full flex items-center justify-center">
-  <div className='grid grid-cols-4 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7  gap-5 sm:gap-6 md:gap-6 lg:gap-10 mt-6  mx-auto max-w-full px-1 sm:px-6'>
+      {/* // Within your Home component, replace the existing category grid code with this: */}
+
+<div className="w-full flex items-center justify-center">
+  <div className='grid grid-cols-3 sm:grid-cols-3 md:grid-cols-6 lg:grid-cols-3 gap-5 sm:gap-6 md:gap-6 lg:gap-10 mt-6 mx-auto max-w-full px-1 sm:px-6'>
     {
       loadingCategory ? (
         new Array(12).fill(null).map((c, index) => (
@@ -241,24 +283,31 @@ const Home = () => {
           </div>
         ))
       ) : (
-        categoryData.map((cat) => (
-          <div
-            key={cat._id+"displayCategory"}
-            className='w-full h-full flex flex-col items-center transition duration-300 transform hover:scale-105 cursor-pointer'
-            onClick={() => handleRedirectProductListpage(cat._id, cat.name)}
-          >
-            <div className="bg-gray-50 rounded-full p-2 sm:p-2 md:p-3 mb-1 sm:mb-2 md:mb-3 shadow-md">
-              <img
-                src={cat.image}
-                alt={cat.name}
-                className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain"
-              />
+        categoryData
+          .filter(cat => 
+            cat.name !== "Best Selling" && 
+            cat.name !== "BestSelling" && 
+            cat.name !== "New Arrivals" && 
+            cat.name !== "NewArrivals" && 
+            cat.name !== "New Arrival")
+          .map((cat) => (
+            <div
+              key={cat._id+"displayCategory"}
+              className='w-full h-full flex flex-col items-center transition duration-300 transform hover:scale-105 cursor-pointer'
+              onClick={() => handleRedirectProductListpage(cat._id, cat.name)}
+            >
+              <div className="bg-gray-50 rounded-full p-2 sm:p-2 md:p-3 mb-1 sm:mb-2 md:mb-3 shadow-md">
+                <img
+                  src={cat.image}
+                  alt={cat.name}
+                  className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain"
+                />
+              </div>
+              <div className="text-center">
+                <h3 className="text-xs sm:text-sm md:text-base font-medium text-gray-800 truncate w-full">{cat.name}</h3>
+              </div>
             </div>
-            <div className="text-center">
-              <h3 className="text-xs sm:text-sm md:text-base font-medium text-gray-800 truncate w-full">{cat.name}</h3>
-            </div>
-          </div>
-        ))
+          ))
       )
     }
   </div>
@@ -268,7 +317,7 @@ const Home = () => {
       <div className="container mx-auto mt-20">
       <div className="flex items-center justify-center mb-8">
           <div className="h-px bg-black w-12"></div>
-          <h2 className="text-2xl font-bold mx-4 text-gray-800">  Popular Subcategories</h2>
+          <h2 className=" text-xl lg:text-2xl font-bold mx-4 text-gray-800">  Popular Subcategories</h2>
           <div className="h-px bg-black w-12"></div>
         </div>
       </div>

@@ -320,7 +320,7 @@ const UploadProduct = () => {
               </div>
             </div>
           </div>
-          <div className="grid gap-1">
+          {/* <div className="grid gap-1">
             <label htmlFor="customerreview" className="font-medium">Customer Review</label>
             <input 
               id="customerreview"
@@ -332,7 +332,7 @@ const UploadProduct = () => {
               onKeyDown={handleAddCustomerreview}
               className="bg-blue-50 p-2 outline-none border focus-within:border-primary-200 rounded"
             />
-          </div>
+          </div> */}
           <div className="grid gap-1">
             <label htmlFor="colors" className="font-medium">Colors</label>
             <input 

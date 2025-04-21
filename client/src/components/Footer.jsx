@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Phone, MapPin } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { valideURLConvert } from '../utils/valideURLConvert';
+import logo from '../assets/babyisland.jpg'
 
 const Footer = ({ close }) => {
   const navigate = useNavigate();
@@ -30,24 +31,32 @@ const Footer = ({ close }) => {
         {/* Left Section - Logo & Company Info */}
         <div className="flex flex-col items-start">
           <img
-            src="/assets/logo.png"
+            src={logo}
             alt="Baby Island"
-            className="w-36 mb-4 filter brightness-0 invert"
+            className="w-36 mb-4 rounded"
           />
-          <div className="flex items-center space-x-2 mb-2">
-            <MapPin className="w-5 h-5 text-blue-300" />
-            <p className="text-sm">XXXXXX Street, City, Country</p>
-          </div>
+        <div className="flex items-center space-x-2 mb-2">
+  <MapPin className="w-5 h-5 text-blue-300" />
+  <a
+    href="https://www.google.com/maps?q=Gandhi+road+opp+super+bazar+road,+Proddatur,+Andhra+Pradesh"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-sm hover:text-blue-300 transition"
+  >
+    Gandhi road opp super bazar road, Proddatur, Andhra Pradesh
+  </a>
+</div>
+
           <div className="flex items-center space-x-2 mb-2">
             <Mail className="w-5 h-5 text-blue-300" />
-            <a href="mailto:support@babyisland.com" className="hover:text-blue-300 transition">
-              support@babyisland.com
+            <a href="mailto:babyisland2021@gmail.com" className="hover:text-blue-300 transition">
+            babyisland2021@gmail.com
             </a>
           </div>
           <div className="flex items-center space-x-2">
             <Phone className="w-5 h-5 text-blue-300" />
-            <a href="tel:+9179999999" className="hover:text-blue-300 transition">
-              +91 7999 999 99
+            <a href="tel:+917991712623" className="hover:text-blue-300 transition">
+              +91 7991712623
             </a>
           </div>
         </div>

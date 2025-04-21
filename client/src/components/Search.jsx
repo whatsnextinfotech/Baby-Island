@@ -37,6 +37,7 @@ const Search = () => {
         <div className='w-full h-full'>
             {
                 !isSearchPage ? (
+                    1000,
                      //not in search page
                      <div onClick={redirectToSearchPage} className='w-full h-full flex items-center justify-center '>
                         <TypeAnimation
@@ -55,7 +56,6 @@ const Search = () => {
                                     'Search "mother needs"',
                                     1000,
                                     'Search "bathing"',
-                                    1000,
                                     'Search "Diapering"',
                                     1000,
                                     'Search "muslin essentials"',

@@ -89,7 +89,7 @@ const CategoryPage = () => {
                             <h3 className='text-xs sm:text-sm font-medium text-center mt-1'>{category.name}</h3>
                             
                             {/* Buttons */}
-                            <div className='absolute bottom-0 mb-2 flex gap-1'>
+                            <div className='absolute bottom-0 mb-0 mt-20 flex gap-1'>
                                 <button 
                                     onClick={() => { setOpenEdit(true); setEditData(category); }} 
                                     className='bg-green-100 hover:bg-green-200 text-green-600 text-xs font-medium py-1 px-2 rounded'

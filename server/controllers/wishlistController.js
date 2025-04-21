@@ -1,4 +1,4 @@
-import WishlistModel from "../models/Wishlist.model.js";
+import WishlistModel from "../models/wishlistModel.js";
 import UserModel from "../models/user.model.js";
 
 // Add to Wishlist

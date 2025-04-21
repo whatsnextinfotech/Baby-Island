@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import SummaryApi from '../common/SummaryApi';
 import Axios from '../utils/Axios';
 import AxiosToastError from '../utils/AxiosToastError';
-import { FaAngleRight, FaAngleLeft } from "react-icons/fa6";
+import { FaAngleRight, FaAngleLeft, FaArrowLeft, FaPause, FaPlay } from "react-icons/fa6";
 import { DisplayPriceInRupees } from '../utils/DisplayPriceInRupees';
 import Divider from '../components/Divider';
 import image1 from '../assets/minute_delivery.png';
@@ -19,6 +19,7 @@ import { getReviews, addReview } from '../store/customerReviewSlice';
 
 const ProductDisplayPage = () => {
   const params = useParams();
+  const navigate = useNavigate();
   let productId = params?.product?.split("-")?.slice(-1)[0];
   const [data, setData] = useState({
     name: "",
@@ -31,6 +32,10 @@ const ProductDisplayPage = () => {
   const [selectedSize, setSelectedSize] = useState("");
   const categoryData = useSelector(state => state.product.allCategory);
   const dispatch = useDispatch();
+  
+  // Auto slide state
+  const [autoSlide, setAutoSlide] = useState(true);
+  const autoSlideInterval = useRef(null);
   
   // Review state
   const { reviews, isLoading: reviewsLoading, error } = useSelector(state => state.reviews);
@@ -61,12 +66,51 @@ const ProductDisplayPage = () => {
     }
   };
 
+  // Handle auto slide
+  useEffect(() => {
+    if (autoSlide && data.image && data.image.length > 1) {
+      autoSlideInterval.current = setInterval(() => {
+        setImage(prevImage => (prevImage + 1) % data.image.length);
+      }, 3000);
+    }
+    
+    return () => {
+      if (autoSlideInterval.current) {
+        clearInterval(autoSlideInterval.current);
+      }
+    };
+  }, [autoSlide, data.image]);
+
   useEffect(() => {
     fetchProductDetails();
     if (productId) {
       dispatch(getReviews(productId));
     }
+    
+    // Scroll to top when productId changes
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+    
+    // Reset state when loading a new product
+    setImage(0);
+    setSelectedColor("");
+    setSelectedSize("");
+    setShowReviewForm(false);
+    setAutoSlide(true);
+    
+    // Clean up auto slide interval when component unmounts or product changes
+    return () => {
+      if (autoSlideInterval.current) {
+        clearInterval(autoSlideInterval.current);
+      }
+    };
   }, [productId, dispatch]);
+
+  const toggleAutoSlide = () => {
+    setAutoSlide(prev => !prev);
+  };
 
   const handleScrollRight = () => {
     imageContainer.current.scrollLeft += 100;
@@ -74,6 +118,18 @@ const ProductDisplayPage = () => {
 
   const handleScrollLeft = () => {
     imageContainer.current.scrollLeft -= 100;
+  };
+
+  const handleSelectImage = (index) => {
+    setImage(index);
+    
+    // Reset auto slide timer when manually selecting an image
+    if (autoSlide && autoSlideInterval.current) {
+      clearInterval(autoSlideInterval.current);
+      autoSlideInterval.current = setInterval(() => {
+        setImage(prevImage => (prevImage + 1) % data.image.length);
+      }, 3000);
+    }
   };
 
   const handleBuyNow = () => {
@@ -154,23 +210,50 @@ const ProductDisplayPage = () => {
   };
 
   const [activeTab, setActiveTab] = useState("Description");
+  
+  const handleBackClick = () => {
+    navigate(-1); // This will navigate back to the previous page
+  };
 
   return (
     <>
+      {/* Back to Page Button */}
+      <div className="container mx-auto p-4">
+        <button 
+          onClick={handleBackClick} 
+          className="flex items-center gap-2 text-gray-700 hover:text-black transition-colors mb-4"
+        >
+          <FaArrowLeft className="text-sm" />
+          <span className="font-medium">Back to previous page</span>
+        </button>
+      </div>
+      
       <section className='container mx-auto p-4 grid lg:grid-cols-2'>
         <div>
-          <div className='bg-white lg:min-h-[65vh] lg:max-h-[65vh] rounded min-h-56 max-h-56 h-full w-full'>
+          <div className='bg-white lg:min-h-[65vh] lg:max-h-[65vh] rounded min-h-56 max-h-56 h-full w-full relative'>
             <img
               src={data.image[image]}
-              className='w-full h-full object-scale-down'
+              className='w-full h-full object-scale-down transition-opacity duration-500'
               alt={data.name}
             /> 
+            
+            {/* Auto slide controls */}
+            {data.image && data.image.length > 1 && (
+              <button 
+                onClick={toggleAutoSlide}
+                className="absolute bottom-4 right-4 bg-white/80 hidden hover:bg-white p-2 rounded-full shadow-md transition-all"
+                aria-label={autoSlide ? "Pause slideshow" : "Play slideshow"}
+              >
+                {autoSlide ? <FaPause size={16} /> : <FaPlay size={16} />}
+              </button>
+            )}
           </div>
           <div className='flex items-center justify-center gap-3 my-2'>
             {data.image.map((img, index) => (
               <div 
                 key={img+index+"point"} 
-                className={`bg-slate-200 w-3 h-3 lg:w-5 lg:h-5 rounded-full ${index === image && "bg-slate-300"}`}
+                className={`bg-slate-200 w-3 h-3 lg:w-5 lg:h-5 rounded-full cursor-pointer transition-all duration-300 ${index === image ? "bg-slate-500 scale-110" : ""}`}
+                onClick={() => handleSelectImage(index)}
               />
             ))}
           </div>
@@ -178,13 +261,15 @@ const ProductDisplayPage = () => {
             <div ref={imageContainer} className='flex gap-4 z-10 relative w-full overflow-x-auto scrollbar-none'>
               {data.image.map((img, index) => (
                 <div 
-                  className='w-20 h-20 min-h-20 min-w-20 cursor-pointer shadow-md' 
+                  className={`w-20 h-20 min-h-20 min-w-20 cursor-pointer transition-all duration-300 ${
+                    index === image ? 'border-2 border-black shadow-lg' : 'shadow-md'
+                  }`}
                   key={img+index}
                 >
                   <img
                     src={img}
                     alt='min-product'
-                    onClick={() => setImage(index)}
+                    onClick={() => handleSelectImage(index)}
                     className='w-full h-full object-scale-down' 
                   />
                 </div>

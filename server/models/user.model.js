@@ -91,6 +91,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['ADMIN', "USER"],
         default: "USER"
+    },
+    wishlist: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product'
     }
 }, {
     timestamps: true
