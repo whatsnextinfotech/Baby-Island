@@ -28,10 +28,15 @@ const ProductDisplayPage = () => {
   const [image, setImage] = useState(0);
   const [loading, setLoading] = useState(false);
   const imageContainer = useRef();
+  const mobileCarouselRef = useRef(null);
   const [selectedColor, setSelectedColor] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
   const categoryData = useSelector(state => state.product.allCategory);
   const dispatch = useDispatch();
+  
+  // Touch handling for mobile carousel
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
   
   // Auto slide state
   const [autoSlide, setAutoSlide] = useState(true);
@@ -66,12 +71,51 @@ const ProductDisplayPage = () => {
     }
   };
 
+  // Mobile touch handlers
+  const handleTouchStart = (e) => {
+    setTouchStart(e.targetTouches[0].clientX);
+    if (autoSlideInterval.current) clearInterval(autoSlideInterval.current);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+    
+    if (isLeftSwipe && data.image.length > 1) {
+      setImage((prev) => (prev + 1) % data.image.length);
+    } else if (isRightSwipe && data.image.length > 1) {
+      setImage((prev) => (prev === 0 ? data.image.length - 1 : prev - 1));
+    }
+    
+    // Reset touch points
+    setTouchStart(0);
+    setTouchEnd(0);
+    
+    // Resume auto slide
+    if (autoSlide && data.image && data.image.length > 1) {
+      startAutoSlide();
+    }
+  };
+
+  const startAutoSlide = () => {
+    if (autoSlideInterval.current) clearInterval(autoSlideInterval.current);
+    
+    autoSlideInterval.current = setInterval(() => {
+      setImage(prevImage => (prevImage + 1) % data.image.length);
+    }, 3000);
+  };
+
   // Handle auto slide
   useEffect(() => {
     if (autoSlide && data.image && data.image.length > 1) {
-      autoSlideInterval.current = setInterval(() => {
-        setImage(prevImage => (prevImage + 1) % data.image.length);
-      }, 3000);
+      startAutoSlide();
     }
     
     return () => {
@@ -124,11 +168,9 @@ const ProductDisplayPage = () => {
     setImage(index);
     
     // Reset auto slide timer when manually selecting an image
-    if (autoSlide && autoSlideInterval.current) {
-      clearInterval(autoSlideInterval.current);
-      autoSlideInterval.current = setInterval(() => {
-        setImage(prevImage => (prevImage + 1) % data.image.length);
-      }, 3000);
+    if (autoSlide) {
+      if (autoSlideInterval.current) clearInterval(autoSlideInterval.current);
+      startAutoSlide();
     }
   };
 
@@ -230,33 +272,72 @@ const ProductDisplayPage = () => {
       
       <section className='container mx-auto p-4 grid lg:grid-cols-2'>
         <div>
-          <div className='bg-white lg:min-h-[65vh] lg:max-h-[65vh] rounded min-h-56 max-h-56 h-full w-full relative'>
-            <img
-              src={data.image[image]}
-              className='w-full h-full object-scale-down transition-opacity duration-500'
-              alt={data.name}
-            /> 
-            
-            {/* Auto slide controls */}
-            {data.image && data.image.length > 1 && (
-              <button 
-                onClick={toggleAutoSlide}
-                className="absolute bottom-4 right-4 bg-white/80 hidden hover:bg-white p-2 rounded-full shadow-md transition-all"
-                aria-label={autoSlide ? "Pause slideshow" : "Play slideshow"}
-              >
-                {autoSlide ? <FaPause size={16} /> : <FaPlay size={16} />}
-              </button>
+          {/* Mobile Image Carousel */}
+          <div 
+            ref={mobileCarouselRef}
+            className='bg-white lg:min-h-[65vh] lg:max-h-[65vh] rounded min-h-56 max-h-56 h-full w-full relative overflow-hidden'
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            {data.image && data.image.length > 0 && (
+              <>
+                {/* Main Image */}
+                <img
+                  src={data.image[image]}
+                  className='w-full h-full object-scale-down transition-all duration-300'
+                  alt={data.name}
+                />
+                
+                {/* Mobile navigation dots */}
+                <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-20">
+                  {data.image.map((_, idx) => (
+                    <button 
+                      key={idx} 
+                      onClick={() => handleSelectImage(idx)}
+                      className={`w-2 h-2 rounded-full ${
+                        idx === image ? 'bg-black hidden' : 'bg-gray-300 hidden'
+                      }`}
+                      aria-label={`View image ${idx + 1}`}
+                    />
+                  ))}
+                </div>
+                
+                {/* Mobile navigation arrows */}
+                {data.image.length > 1 && (
+                  <>
+                    <button 
+                      onClick={() => handleSelectImage(image === 0 ? data.image.length - 1 : image - 1)}
+                      className="absolute top-1/2 left-2 -translate-y-1/2 bg-white/70 hidden rounded-full p-1.5 shadow-md z-20"
+                      aria-label="Previous image"
+                    >
+                      <FaAngleLeft size={16} />
+                    </button>
+                    <button 
+                      onClick={() => handleSelectImage((image + 1) % data.image.length)}
+                      className="absolute top-1/2 right-2 -translate-y-1/2 bg-white/70 hidden rounded-full p-1.5 shadow-md z-20"
+                      aria-label="Next image"
+                    >
+                      <FaAngleRight size={16} />
+                    </button>
+                  </>
+                )}
+              </>
             )}
           </div>
-          <div className='flex items-center justify-center gap-3 my-2'>
+          
+          {/* Image navigation dots for desktop */}
+          <div className='flex items-center justify-center gap-3 my-2 '>
             {data.image.map((img, index) => (
               <div 
                 key={img+index+"point"} 
-                className={`bg-slate-200 w-3 h-3 lg:w-5 lg:h-5 rounded-full cursor-pointer transition-all duration-300 ${index === image ? "bg-slate-500 scale-110" : ""}`}
+                className={`bg-slate-200 w-2 h-2 lg:w-3 lg:h-3 rounded-full cursor-pointer transition-all duration-300 ${index === image ? "bg-slate-500 scale-110" : ""}`}
                 onClick={() => handleSelectImage(index)}
               />
             ))}
           </div>
+          
+          {/* Thumbnails for desktop */}
           <div className='grid relative'>
             <div ref={imageContainer} className='flex gap-4 z-10 relative w-full overflow-x-auto scrollbar-none'>
               {data.image.map((img, index) => (
@@ -276,10 +357,10 @@ const ProductDisplayPage = () => {
               ))}
             </div>
             <div className='w-full -ml-3 h-full hidden lg:flex justify-between absolute items-center'>
-              <button onClick={handleScrollLeft} className='z-10 bg-white relative p-1 rounded-full shadow-lg'>
+              <button onClick={handleScrollLeft} className='z-10 bg-white relative p-1  rounded-full shadow-lg'>
                 <FaAngleLeft/>
               </button>
-              <button onClick={handleScrollRight} className='z-10 bg-white relative p-1 rounded-full shadow-lg'>
+              <button onClick={handleScrollRight} className='z-10 bg-white relative p-1  rounded-full shadow-lg'>
                 <FaAngleRight/>
               </button>
             </div>
