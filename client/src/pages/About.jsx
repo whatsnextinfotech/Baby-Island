@@ -160,20 +160,20 @@ const About = () => {
         </section>
 
         {/* About Us Section */}
-        <section className="mb-16">
+        <section className="mb-16 ">
           <div className="flex items-center justify-center mb-8">
             <div className="h-px bg-indigo-300 w-12"></div>
             <h2 className=" text-xl lg:text-2xl font-bold mx-4 text-black">About Us</h2>
             <div className="h-px bg-indigo-300 w-12"></div>
           </div>
-          <div className="flex flex-col md:flex-row-reverse items-center gap-8">
+          <div className="flex flex-col md:flex-row-reverse items-center gap-8 p-6 rounded-xl shadow-md bg-blue-50">
             <img
               src={about}
               alt="Our Team"
               className="w-full md:w-1/3 h-64 rounded-xl object-cover shadow-md"
             />
             <div className="w-full md:w-2/3">
-              <p className="text-gray-600 text-lg mb-4">
+              <p className="text-gray-600  text-lg mb-4">
                 At Baby Island, we are dedicated to providing the best products for your little one. Our carefully curated selection of baby essentials includes everything from clothing and toys to nursery items, all sourced from trusted, high-quality brands.
               </p>
               <p className="text-gray-600 text-lg">
